@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 
 import store from './store'
 
-
+import  { getChangeInputAction, getAddListItemAction, getDelListItemAction }  from  './store/actionCreator'
 
 class TodoList extends Component {
     constructor(props) {
@@ -15,23 +15,22 @@ class TodoList extends Component {
         this.changeInput = this.changeInput.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleBtnClick = this.handleBtnClick.bind(this);
+        this.delItem = this.delItem.bind(this);
         store.subscribe(this.handleInputChange);
     }   
     handleInputChange(){
         this.setState(store.getState());
     }
     handleBtnClick(){
-        const action = {
-            type: 'add_list_item'
-        };
+        const action = getAddListItemAction();
+        store.dispatch(action);
+    }
+    delItem(index){        
+        const action = getDelListItemAction(index);
         store.dispatch(action);
     }
     changeInput(e){     
-        console.log(e.target.value)   
-        const action = {
-            type: 'change_input_value',
-            value: e.target.value
-        };
+        const action = getChangeInputAction(e.target.value);
         store.dispatch(action);
     }
     render() {
@@ -50,7 +49,7 @@ class TodoList extends Component {
                     style={{width: 600}}
                     bordered
                     dataSource={this.state.list}
-                    renderItem={(item, index) => (<List.Item >{item}</List.Item>)}
+                    renderItem={(item, index) => (<List.Item  onClick={(e)=>this.delItem(index) }  >{item}</List.Item>)}
                 />
             </div>
         );
